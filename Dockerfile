@@ -14,8 +14,8 @@ WORKDIR /app
 
 # 4. Copy and lock down production python dependencies
 COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
-
+# RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt --break-system-packages
 # 5. Populate the active operational code tree
 COPY src/ ./src/
 COPY fixtures/ ./fixtures/
