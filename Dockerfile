@@ -2,8 +2,9 @@
 
 FROM eclipse-temurin:17-jre AS runtime-engine
 # 2. Inject Python 3 into the core execution runtime container
-RUN apt-get update && apt-get install -y \
-    python3 \
+# RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \    
+python3 \
     python3-pip \
     curl \
     && apt-get clean \
