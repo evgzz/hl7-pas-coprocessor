@@ -19,11 +19,11 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 # 5. Populate the active operational code tree
 COPY src/ ./src/
 COPY fixtures/ ./fixtures/
-COPY ui_data/ ./ui_data/
+# COPY ui_data/ ./ui_data/
 COPY index.html .
 
 # 6. Mirror the local binary payload structures internally
-COPY bin/ ./bin/
+# COPY bin/ ./bin/
 
 # 7. Pull the massive validation jar directly during cloud build if missing
 RUN if [ ! -f bin/validator_cli.jar ]; then \
