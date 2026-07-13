@@ -1,6 +1,6 @@
 # 1. Use an official, secure OpenJDK base image to handle the HL7 Validator JRE requirements
-FROM openjdk:17-slim AS runtime-engine
 
+FROM eclipse-temurin:17-jre AS runtime-engine
 # 2. Inject Python 3 into the core execution runtime container
 RUN apt-get update && apt-get install -y \
     python3 \
