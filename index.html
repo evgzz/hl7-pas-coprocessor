@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DaVinci PAS Coprocessor Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen antialiased flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="border-b border-slate-800 bg-slate-950/50 backdrop-blur px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="h-3 w-3 bg-indigo-500 rounded-full animate-pulse"></div>
+            <h1 class="text-lg font-bold tracking-tight text-white">DaVinci PAS <span class="text-indigo-400 font-mono text-sm">v2.0.1-Coprocessor</span></h1>
+        </div>
+        <div class="flex items-center space-x-3">
+            <label for="fixtureSelect" class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Select Testing Fixture:</label>
+            <select id="fixtureSelect" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-200 focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer">
+                <option value="Fixture_A_Safe_Case_dashboard.json">Fixture A: Safe Control Case</option>
+                <option value="Fixture_B_Breaking_Case_dashboard.json">Fixture B: Hard Schema Failure</option>
+                <option value="Fixture_C_Uncertain_Case_dashboard.json" selected>Fixture C: Ambiguous Local Code (AI Mapping)</option>
+            </select>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-1 p-6 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left Column: Status Badge & Technical Metadata Card -->
+        <div class="space-y-6">
+            <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-6 shadow-xl">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Pipeline Routing Disposition</h2>
+                <div class="flex items-center space-x-3 mb-6">
+                    <span id="badge" class="px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase border bg-amber-500/10 text-amber-400 border-amber-500/20">AI Investigation Active</span>
+                </div>
+                <div class="space-y-4 font-mono text-xs">
+                    <div class="flex justify-between border-b border-slate-800 pb-2"><span class="text-slate-500">Transaction ID:</span><span id="txId" class="text-slate-300">tx_demo_loading</span></div>
+                    <div class="flex justify-between border-b border-slate-800 pb-2"><span class="text-slate-500">Timestamp:</span><span id="timestamp" class="text-slate-300">--</span></div>
+                    <div class="flex justify-between border-b border-slate-800 pb-2"><span class="text-slate-500">PAS Target Profile:</span><span id="profile" class="text-indigo-400">profile-pas-claim-update</span></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-6 shadow-xl">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Clinical Narrative context</h2>
+                <p id="narrative" class="text-sm text-slate-300 leading-relaxed font-sans">Analyzing structural assertions against local schemas...</p>
+            </div>
+        </div>
+
+        <!-- Center Column: Deterministic Java Validator Engine Logs -->
+        <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-6 shadow-xl flex flex-col h-[550px]">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Engine 1: Deterministic Core</h2>
+                <span class="text-[10px] font-mono bg-slate-800 text-slate-300 px-2 py-0.5 rounded">validator_cli.jar</span>
+            </div>
+            <div class="space-y-3 font-mono text-xs mb-4">
+                <div class="flex justify-between"><span class="text-slate-500">Structural Validity:</span><span id="detValid" class="text-emerald-400">✓ PASS</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Intercepted Issues:</span><span id="detIssuesCount" class="text-amber-400">1 Warning</span></div>
+            </div>
+            <div id="detLogs" class="flex-1 bg-slate-900/80 border border-slate-800 rounded-lg p-4 font-mono text-xs overflow-y-auto text-slate-400 space-y-2">
+                <!-- Log entries pop here -->
+            </div>
+        </div>
+
+        <!-- Right Column: Heuristic Coprocessor (AI Layer) -->
+        <div class="bg-slate-950/40 border border-slate-800 rounded-xl p-6 shadow-xl flex flex-col h-[550px]">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Engine 2: Heuristic Reasoner</h2>
+                <span class="text-[10px] font-mono bg-indigo-950 text-indigo-300 px-2 py-0.5 rounded">GPT-4o Agent</span>
+            </div>
+            <div id="aiInactive" class="hidden flex-1 flex flex-col items-center justify-center text-center p-6 border border-dashed border-slate-800 rounded-lg bg-slate-900/20">
+                <p class="text-xs text-slate-500 font-mono">Bypassed: Schema passed validation within explicit deterministic boundary conditions. No heuristics required.</p>
+            </div>
+            <div id="aiActive" class="flex-1 flex flex-col space-y-4 h-full">
+                <div class="space-y-3 font-mono text-xs">
+                    <div class="flex justify-between"><span class="text-slate-500">Confidence Accuracy Score:</span><span id="aiConfidence" class="text-emerald-400">94.0%</span></div>
+                </div>
+                <div class="flex-1 bg-slate-900/80 border border-slate-800 rounded-lg p-4 flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold tracking-wider text-indigo-400 uppercase block mb-2">Automated Administrative Crosswalk</span>
+                        <div class="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-md border border-slate-800 font-mono text-xs">
+                            <div>
+                                <span class="text-[10px] text-slate-500 block">Original Local Code</span>
+                                <span id="crossFrom" class="text-slate-300">REP-999-ADDITIONAL</span>
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-500 block">Target Crosswalk Mapping</span>
+                                <span id="crossTo" class="text-emerald-400">LOINC 75 (Attachment)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-slate-800/60">
+                        <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase block mb-1">Clinical Justification Inference</span>
+                        <p id="aiJustification" class="text-xs text-slate-300 font-sans leading-relaxed">Checking crosswalk constraints...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- UI State Synchronization Engine Logic -->
+    <script>
+        const select = document.getElementById('fixtureSelect');
+        
+        async function renderDashboardState(jsonFilename) {
+            try {
+                const response = await fetch(`ui_data/${jsonFilename}`);
+                if (!response.ok) throw new Error(`Could not find compiled artifact: ui_data/${jsonFilename}`);
+                const data = await response.parse ? await response.json() : JSON.parse(await response.text());
+                
+                // Set structural meta
+                document.getElementById('txId').textContent = data.transactionId;
+                document.getElementById('timestamp').textContent = data.timestamp;
+                document.getElementById('profile').textContent = data.profileTarget;
+                document.getElementById('narrative').textContent = data.uiState.narrativeText;
+
+                // Sync Dynamic Status Badge Colors
+                const badge = document.getElementById('badge');
+                badge.textContent = data.uiState.badgeLabel;
+                badge.className = `px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase border `;
+                if(data.uiState.badgeColor === 'green') badge.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+                if(data.uiState.badgeColor === 'red') badge.classList.add('bg-rose-500/10', 'text-rose-400', 'border-rose-500/20');
+                if(data.uiState.badgeColor === 'orange') badge.classList.add('bg-amber-500/10', 'text-amber-400', 'border-amber-500/20');
+
+                // Sync Deterministic Log Render Output
+                const det = data.deterministicAnalysis;
+                document.getElementById('detValid').textContent = det.isValidStructure ? "✓ COMPLIANT" : "❌ REJECTED";
+                document.getElementById('detValid').className = det.isValidStructure ? "text-emerald-400" : "text-rose-400";
+                document.getElementById('detIssuesCount').textContent = `${det.totalErrors} Errors, ${det.totalWarnings} Warnings`;
+
+                const logsContainer = document.getElementById('detLogs');
+                logsContainer.innerHTML = '';
+                if(det.rawHL7Issues.length === 0) {
+                    logsContainer.innerHTML = `<div class="text-emerald-500/80">[INFO] Core schema syntax fully conformant with DaVinci implementation standards.</div>`;
+                } else {
+                    det.rawHL7Issues.forEach(issue => {
+                        const isErr = issue.severity === 'error';
+                        logsContainer.innerHTML += `
+                            <div class="p-2 rounded mb-2 ${isErr ? 'bg-rose-950/30 border border-rose-900/40 text-rose-300' : 'bg-amber-950/20 border border-amber-900/30 text-amber-300'}">
+                                <span class="font-bold uppercase text-[10px] block mb-0.5">${issue.severity} @ ${issue.location}</span>
+                                ${issue.message}
+                            </div>`;
+                    });
+                }
+
+                // Sync Heuristic Engine Panel States
+                const heur = data.heuristicAnalysis;
+                if(!heur.executionTriggered) {
+                    document.getElementById('aiActive').classList.add('hidden');
+                    document.getElementById('aiInactive').classList.remove('hidden');
+                } else {
+                    document.getElementById('aiInactive').classList.add('hidden');
+                    document.getElementById('aiActive').classList.remove('hidden');
+                    document.getElementById('aiConfidence').textContent = `${(heur.confidenceScore * 100).toFixed(1)}%`;
+                    document.getElementById('aiJustification').textContent = heur.clinicalJustification;
+                    if(heur.crosswalk) {
+                        document.getElementById('crossFrom').textContent = heur.crosswalk.original_code;
+                        document.getElementById('crossTo').textContent = heur.crosswalk.target_standard_code;
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('detLogs').innerHTML = `<div class="text-rose-500">[ERROR] Failed to load pipeline visualization slice. Did you run your master orchestrator script?</div>`;
+            }
+        }
+
+        select.addEventListener('change', (e) => renderDashboardState(e.target.value));
+        window.addEventListener('DOMContentLoaded', () => renderDashboardState(select.value));
+    </script>
+</body>
+</html>

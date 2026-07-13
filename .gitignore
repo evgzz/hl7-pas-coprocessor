@@ -1,0 +1,15 @@
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+.env
+bin/outcome_*.json
+ui_data/*_dashboard.json
+!ui_data/.gitkeep
+*.log
+bin/validator_cli.jar
+bin/ig_packages/*.tgz
