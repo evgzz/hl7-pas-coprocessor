@@ -26,10 +26,13 @@ COPY index.html .
 # COPY bin/ ./bin/
 
 # 7. Pull the massive validation jar directly during cloud build if missing
-RUN if [ ! -f bin/validator_cli.jar ]; then \
+# RUN if [ ! -f bin/validator_cli.jar ]; then \
+    # curl -L -o bin/validator_cli.jar https://github.com/hapifhir/fhir-validator-app/releases/download/v6.1.3/validator_cli.jar; \
+    # fi
+RUN mkdir -p bin && \
+    if [ ! -f bin/validator_cli.jar ]; then \
     curl -L -o bin/validator_cli.jar https://github.com/hapifhir/fhir-validator-app/releases/download/v6.1.3/validator_cli.jar; \
     fi
-
 # 8. Expose the default network port used by your presentation dashboard
 EXPOSE 8080
 
