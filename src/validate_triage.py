@@ -6,10 +6,21 @@ VALIDATOR_JAR = "bin/validator_cli.jar"
 IG_PACKAGE = "bin/ig_packages/hl7.fhir.us.davinci-pas#2.0.1.tgz"
 FHIR_VERSION = "4.0.1"
 
+# def run_hl7_validator(fixture_path, output_path):
+    # cmd = ["java", "-jar", VALIDATOR_JAR, fixture_path, "-version", FHIR_VERSION, "-ig", IG_PACKAGE, "-output", output_path]
 def run_hl7_validator(fixture_path, output_path):
-    cmd = ["java", "-jar", VALIDATOR_JAR, fixture_path, "-version", FHIR_VERSION, "-ig", IG_PACKAGE, "-output", output_path]
+    # Re-order the flags so options come first, use -output-json, and place target file at the end
+    cmd = [
+        "java", "-jar", VALIDATOR_JAR, 
+        "-version", FHIR_VERSION, 
+        "-ig", IG_PACKAGE, 
+        "-output", output_path, 
+        fixture_path
+    ]
     subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return output_path
+    # subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    # return output_path
 
 def triage_outcome(outcome_json_path):
     if not os.path.exists(outcome_json_path):
